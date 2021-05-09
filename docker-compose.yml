@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      dockerfile: Dockerfile.development
+      context: .
+    container_name: bshare_backend_test_001
+    ports:
+      - 3100:3100
+      - 9229:9229
+    volumes:
+      - ./:/app
+    profiles: ["dev", "dev-backend"]
+    working_dir: /app
+    depends_on:
+      - mysql
+    command: yarn dev
+    environment:
+      ORM_CONNECTION: mysql
+      ORM_HOST: bshare_database_test_0.0.1
+      ORM_USERNAME: root
+      ORM_PASSWORD: bshare
+      ORM_DATABASE: db_bshare
+
+  mysql:
+    image: mysql:8.0
+    container_name: bshare_database_test_0.0.1
+    profiles: ["dev", "database"]
+    ports:
+      - 3309:3306
+    volumes:
+      - bshare_database_test_0.0.1:/var/lib/mysql
+    environment:
+      MYSQL_USER: CANELA
+      MYSQL_PASSWORD: canela
+      MYSQL_ROOT_PASSWORD: bshare
+      MYSQL_DATABASE: db_bshare
+
+volumes:
+  bshare_database_test_0.0.1:
